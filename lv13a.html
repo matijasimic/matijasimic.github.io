@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Matija Šimić">
+  <meta name="description" content="13a_LV_SJWP — Radionica: dizajn identiteta za Špoljaričinke. Matija Šimić i tim.">
+  <meta property="og:title" content="LV13a · Radionica · Šimić Matija">
+  <meta property="og:description" content="13a_LV_SJWP — Radionica: dizajn identiteta za Špoljaričinke. Matija Šimić i tim.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <title>13a_LV_SJWP – Radionica · Matija Šimić</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .brand-card {
+      background: linear-gradient(135deg, #1a0e08 0%, #251508 60%, #1a0e08 100%);
+      border: 1px solid #3d2510; border-radius: 12px;
+      padding: 2rem; display: flex; align-items: center; gap: 2.5rem; margin-bottom: 1.5rem;
+    }
+    .brand-logo-img {
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow:
+        0 0 0 3px rgba(202,142,74,0.5),
+        0 0 0 6px rgba(202,142,74,0.15),
+        0 0 0 10px rgba(202,142,74,0.06),
+        0 12px 40px rgba(0,0,0,0.65);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .brand-logo-img:hover {
+      transform: scale(1.05);
+      box-shadow:
+        0 0 0 3px rgba(202,142,74,0.75),
+        0 0 0 7px rgba(202,142,74,0.25),
+        0 0 0 13px rgba(202,142,74,0.08),
+        0 0 32px rgba(202,142,74,0.25),
+        0 16px 48px rgba(0,0,0,0.7);
+    }
+    .brand-name { font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:800; color:#CA8E4A; letter-spacing:-0.02em; margin-bottom:0.4rem; }
+    .brand-sub { color:#986D47; font-size:0.9rem; margin-bottom:0.9rem; line-height:1.6; }
+    .brand-tag { display:inline-block; background:rgba(202,142,74,0.12); color:#CA8E4A; border:1px solid rgba(202,142,74,0.25); padding:0.2rem 0.7rem; border-radius:100px; font-size:0.75rem; font-weight:500; margin-right:0.35rem; margin-bottom:0.35rem; transition: background 0.2s, border-color 0.2s, transform 0.2s; cursor:default; }
+    .brand-tag:hover { background:rgba(202,142,74,0.22); border-color:rgba(202,142,74,0.5); transform:translateY(-2px); }
+    .participants-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+    .part-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem; transition:border-color 0.2s; }
+    .part-card:hover { border-color:rgba(139,92,246,0.3); }
+    .part-card h3 { font-size:0.82rem; margin-bottom:0.5rem; }
+    .part-card ul { list-style:none; padding:0; margin:0; }
+    .part-card ul li { font-size:0.82rem; color:var(--muted); padding:0.15rem 0; display:flex; align-items:center; gap:0.4rem; }
+    .part-card ul li::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; opacity:0.6; }
+    .color-swatch-row { display:flex; gap:0.75rem; margin:1rem 0; flex-wrap:wrap; }
+    .color-block { border-radius:12px; width:120px; height:120px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:0.6rem; border:1px solid rgba(255,255,255,0.06); transition:transform 0.15s; cursor:default; }
+    .color-block:hover { transform:scale(1.06); }
+    .color-hex { font-family:'Courier New',monospace; font-size:0.76rem; font-weight:800; background:rgba(0,0,0,0.55); padding:0.18rem 0.5rem; border-radius:5px; text-align:center; letter-spacing:0.04em; }
+    .color-name { font-size:0.68rem; font-weight:600; margin-top:4px; text-align:center; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">MŠ.</a>
+  <a href="index.html">Početna</a>
+  <div class="nav-group">
+    <button class="nav-trigger">Predmeti <span class="nav-trigger-arrow">▾</span></button>
+    <div class="nav-dropdown">
+      <a href="sjwp.html" class="active">SJWP</a>
+      <a href="multimedija.html">MM</a>
+      <a href="dijagnostika.html">DIOIS</a>
+    </div>
+  </div>
+  <a href="poveznice.html">Poveznice</a>
+  <a href="raspored.html">Raspored</a>
+  <a href="certifikati.html">Certifikati</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Skriptni jezici i web programiranje · 13a_LV_SJWP</div>
+  <h1>Radionica: Dizajn mrežne stranice</h1>
+  <p>Zapisnik radionice — projekt izrade mrežnog sjedišta za palačinkarnicu Špoljaričinke.</p>
+</div>
+
+<div class="container" style="padding-top:0;">
+  <hr>
+
+  <div class="brand-card">
+    <img src="assets/img/spaljarinke-logo.png" alt="Špoljaričinke logo" class="brand-logo-img">
+    <div>
+      <div class="brand-name">Špoljaričinke</div>
+      <div class="brand-sub">Mrežno sjedište palačinkarnice — projekt iz predmeta<br>Skriptni jezici i web programiranje · 3.B · 2025.</div>
+      <div>
+        <span class="brand-tag">Krem &amp; pastelni stil</span>
+        <span class="brand-tag">Desktop only</span>
+        <span class="brand-tag">HTML &amp; CSS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="participants-grid">
+    <div class="part-card">
+      <h3>Naručitelji</h3>
+      <ul>
+        <li>Bruno Plašć</li>
+        <li>Lukas Kralj</li>
+        <li>Leon Špoljarić</li>
+        <li>Matija Šimić</li>
+      </ul>
+    </div>
+    <div class="part-card">
+      <h3>Izvođači</h3>
+      <ul>
+        <li>Matej Crnoja</li>
+        <li>Marin Horvat</li>
+        <li>David Merkaš</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Zapisnik sastanka</h2>
+
+  <div class="card">
+    <h3>Zahtjevi naručitelja</h3>
+    <p>Naručitelji su tražili krem stil — ugodan, svijetao dizajn s mekim bojama koji podsjeća na opuštajuće okruženje, a istovremeno izgleda moderno i uredno. Portfolio palačinki mora biti uokviren zaobljenim rubovima kako bi sve izgledalo čisto i privlačno.</p>
+  </div>
+
+  <div class="card">
+    <h3>Tehničke napomene izvođača</h3>
+    <p><strong>Matej</strong> — stranica se dizajnira isključivo za računala (desktop verzija).</p>
+    <p style="margin-top:0.5rem;"><strong>Marin</strong> — fokus je na frontendu (HTML i CSS) bez pozadinske baze podataka. Gumb "Naruči" bit će animiran, ali bez stvarne funkcije.</p>
+    <p style="margin-top:0.5rem;"><strong>David</strong> — navigacija će biti fiksna i nenametljiva, s fontovima koji prate nježni i čisti stil stranice.</p>
+  </div>
+
+  <h2>Vizualni identitet — paleta boja</h2>
+  <p>Tople, pastelne nijanse koje asociraju na palačinke i ugodno okruženje.</p>
+
+  <div class="color-swatch-row">
+    <div class="color-block" style="background:#986D47;">
+      <span class="color-hex" style="color:#fff;">#986D47</span>
+      <span class="color-name" style="color:rgba(255,255,255,0.85);">Smeđa</span>
+    </div>
+    <div class="color-block" style="background:#FDF5E3; border-color:rgba(0,0,0,0.12);">
+      <span class="color-hex" style="color:rgba(0,0,0,0.72); background:rgba(0,0,0,0.08);">#FDF5E3</span>
+      <span class="color-name" style="color:rgba(0,0,0,0.55);">Krem</span>
+    </div>
+    <div class="color-block" style="background:#F9F3E0; border-color:rgba(0,0,0,0.12);">
+      <span class="color-hex" style="color:rgba(0,0,0,0.72); background:rgba(0,0,0,0.08);">#F9F3E0</span>
+      <span class="color-name" style="color:rgba(0,0,0,0.55);">Topla bijela</span>
+    </div>
+    <div class="color-block" style="background:#DFBD89;">
+      <span class="color-hex" style="color:rgba(0,0,0,0.72); background:rgba(0,0,0,0.12);">#DFBD89</span>
+      <span class="color-name" style="color:rgba(0,0,0,0.65);">Bež</span>
+    </div>
+    <div class="color-block" style="background:#CA8E4A;">
+      <span class="color-hex" style="color:#fff;">#CA8E4A</span>
+      <span class="color-name" style="color:rgba(255,255,255,0.85);">Zlatna</span>
+    </div>
+  </div>
+
+  <h2>Struktura sjedišta</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Stranica</th><th>Sadržaj</th><th>Napomene</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Naslovnica</strong></td><td>Velika slika s logotipom i informacijama</td><td>Hero sekcija s CTA gumbom</td></tr>
+        <tr><td><strong>Jelovnik</strong></td><td>Pregled palačinki u karticama s mekim sjenama</td><td>Grid raspored, bež kartice</td></tr>
+        <tr><td><strong>O nama</strong></td><td>Tekst o priči palačinkarnice</td><td>Narativni stil</td></tr>
+        <tr><td><strong>Narudžba</strong></td><td>Vizualni gumbi za narudžbu</td><td>Animirani, nefunkcionalni (bez SQL)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-box">
+    <p>Gumbi za narudžbu su animirani i vizualno upotpunjuju dizajn, ali nefunkcionalni jer projekt koristi isključivo HTML i CSS, bez backend sustava i SQL baze podataka.</p>
+  </div>
+
+</div>
+<footer>© 2026 Matija Šimić · Tehnička škola Ruđera Boškovića · Zagreb</footer>
+<script src="assets/hover.js"></script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Matija Šimić">
+  <meta name="description" content="Raspored sati — TSRB 3.b, smjer Sistemaš. Matija Šimić.">
+  <meta property="og:title" content="Raspored · Šimić Matija">
+  <meta property="og:description" content="Raspored sati — TSRB 3.b, smjer Sistemaš. Matija Šimić.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <title>Raspored · Šimić Matija</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+
+    /* ── TABLE WRAPPER ── */
+    .tt-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid rgba(139,92,246,0.12); }
+
+    .tt-table { width:100%; border-collapse:collapse; }
+
+    /* HEADER */
+    .tt-table thead tr {
+      background: rgba(139,92,246,0.06);
+    }
+    .tt-table th {
+      color: rgba(139,92,246,0.65);
+      font-family:'Outfit',sans-serif; font-size:0.72rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:0.1em;
+      padding:0.9rem 0.6rem; text-align:center;
+      border-bottom: 1px solid rgba(139,92,246,0.12);
+    }
+    .tt-table th:first-child { text-align:left; padding-left:0.9rem; min-width:88px; }
+
+    /* ROWS */
+    .tt-table tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.035);
+      transition: background 0.15s;
+    }
+    .tt-table tbody tr:nth-child(even):not(.break-row) {
+      background: rgba(255,255,255,0.012);
+    }
+    .tt-table tbody tr:hover:not(.break-row) {
+      background: rgba(139,92,246,0.07);
+    }
+    .tt-table tbody tr:hover:not(.break-row) .sat-num { color: #c4b5fd; }
+
+    .tt-table td {
+      padding: 0.75rem 0.45rem; text-align:center; vertical-align:middle;
+    }
+    .tt-table td:first-child { text-align:left; padding-left:0.9rem; }
+
+    /* SAT CELL */
+    .sat-num {
+      font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:800;
+      color:var(--accent); display:block; line-height:1.2; transition:color 0.15s;
+    }
+    .sat-time {
+      font-size:0.68rem; color:#9090c0; font-weight:500;
+      display:block; margin-top:2px; white-space:nowrap;
+    }
+
+    /* PILLS — premium info chips with SVG icons */
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.28rem;
+      border-radius: 7px; padding: 0.32rem 0.72rem;
+      font-size: 0.73rem; font-weight: 700; white-space: nowrap;
+      border: 1px solid transparent;
+      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+      cursor: default; letter-spacing: 0.02em;
+    }
+    .pill:hover { opacity: 0.85; transform: scale(1.06); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .pill svg { width: 11px; height: 11px; flex-shrink: 0; opacity: 0.85; }
+
+    /* SUBJECT COLORS — muted dark chips */
+    .p-sjwp { background:rgba(124,58,237,0.16);  color:#c4b5fd; border-color:rgba(124,58,237,0.32); }
+    .p-mm   { background:rgba(219,39,119,0.14);  color:#f9a8d4; border-color:rgba(219,39,119,0.3); }
+    .p-dois { background:rgba(5,150,105,0.15);   color:#6ee7b7; border-color:rgba(5,150,105,0.3); }
+    .p-mat  { background:rgba(37,99,235,0.17);   color:#93c5fd; border-color:rgba(37,99,235,0.32); }
+    .p-hrv  { background:rgba(180,83,9,0.18);    color:#fcd34d; border-color:rgba(180,83,9,0.32); }
+    .p-eng  { background:rgba(185,28,28,0.16);   color:#fca5a5; border-color:rgba(185,28,28,0.3); }
+    .p-fiz  { background:rgba(14,116,144,0.18);  color:#a5f3fc; border-color:rgba(14,116,144,0.32); }
+    .p-tzk  { background:rgba(63,98,18,0.22);    color:#bef264; border-color:rgba(63,98,18,0.38); }
+    .p-gr   { background:rgba(71,85,105,0.22);   color:#cbd5e1; border-color:rgba(71,85,105,0.38); }
+    .p-os   { background:rgba(234,88,12,0.16);   color:#fb923c; border-color:rgba(234,88,12,0.3); }
+    .p-mik  { background:rgba(194,65,12,0.17);   color:#fdba74; border-color:rgba(194,65,12,0.32); }
+    .p-dbp  { background:rgba(17,94,89,0.2);     color:#5eead4; border-color:rgba(17,94,89,0.36); }
+    .p-rm   { background:rgba(21,128,61,0.17);   color:#86efac; border-color:rgba(21,128,61,0.32); }
+    .p-vj   { background:rgba(120,53,15,0.2);    color:#fde68a; border-color:rgba(120,53,15,0.36); }
+    .p-sr   { background:rgba(51,65,85,0.28);    color:#94a3b8; border-color:rgba(51,65,85,0.45); }
+    .p-vim  { background:rgba(14,165,233,0.15);  color:#7dd3fc; border-color:rgba(14,165,233,0.3); }
+
+    /* BREAK ROW */
+    .break-row { border-bottom: none !important; }
+    .break-row td {
+      background: rgba(139,92,246,0.08);
+      border-top: 1px solid rgba(139,92,246,0.14);
+      border-bottom: 1px solid rgba(139,92,246,0.14);
+      text-align: center !important;
+      padding: 0.8rem;
+    }
+    .break-inner {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      color: rgba(167,139,250,0.8);
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .break-inner svg { opacity: 0.7; }
+    .break-row:hover td { background: rgba(139,92,246,0.13) !important; }
+
+    .empty {
+      color: transparent;
+    }
+    .empty::after {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 1px;
+      background: rgba(255,255,255,0.13);
+      border-radius: 1px;
+      vertical-align: middle;
+    }
+
+    /* TABS */
+    .tt-tabs { display:flex; gap:0.5rem; margin-bottom:1.25rem; }
+    .tt-tab {
+      background: var(--bg3); border: 1px solid var(--border); color: var(--muted);
+      font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.84rem;
+      padding: 0.55rem 1.3rem; border-radius: var(--radius); cursor: pointer;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .tt-tab:hover {
+      color: var(--text); border-color: rgba(139,92,246,0.45);
+      transform: translateY(-1px);
+      box-shadow: 0 0 8px rgba(139,92,246,0.2);
+    }
+    .tt-tab.active {
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(139,92,246,0.2));
+      border-color: rgba(139,92,246,0.55); color: #e0d7ff;
+      box-shadow: 0 0 0 1px rgba(139,92,246,0.2), 0 4px 18px rgba(139,92,246,0.25);
+    }
+
+
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">MŠ.</a>
+  <a href="index.html">Početna</a>
+  <div class="nav-group">
+    <button class="nav-trigger">Predmeti <span class="nav-trigger-arrow">▾</span></button>
+    <div class="nav-dropdown">
+      <a href="sjwp.html">SJWP</a>
+      <a href="multimedija.html">MM</a>
+      <a href="dijagnostika.html">DIOIS</a>
+    </div>
+  </div>
+  <a href="poveznice.html">Poveznice</a>
+  <a href="raspored.html" class="active">Raspored</a>
+  <a href="certifikati.html">Certifikati</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Školska godina 2025./2026.</div>
+  <h1>Raspored sati</h1>
+  <p>Tehnička škola Ruđera Boškovića · Tehničar za računalstvo · 3.b · Razrednica: Marija Eva Mrsel</p>
+  <div style="margin-top:0.85rem; display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+    <span class="smjer-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+      Smjer: Sistemaš
+    </span>
+    <span class="smjer-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Izborni predmet: Vjeronauk
+    </span>
+  </div>
+</div>
+
+<div class="container" style="padding-top:0;">
+  <hr>
+
+  <div class="tt-tabs">
+    <button class="tt-tab active" onclick="showTab('jutro',this)">Jutarnja smjena</button>
+    <button class="tt-tab" onclick="showTab('popodne',this)">Poslijepodnevna smjena</button>
+  </div>
+
+
+  <!-- JUTARNJA -->
+  <div id="jutro" class="tab-content show">
+    <div class="tt-wrap">
+      <table class="tt-table">
+        <thead>
+          <tr><th>Sat</th><th>PON</th><th>UTO</th><th>SRI</th><th>ČET</th><th>PET</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="sat-num">1.</span><span class="sat-time">7:30–8:15</span></td>
+            <td><span class="pill p-dois">DIOIS</span></td>
+            <td class="empty"></td>
+            <td><span class="pill p-eng">ENG</span></td>
+            <td><span class="pill p-gr">GR</span></td>
+            <td><span class="pill p-fiz">FIZ</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">2.</span><span class="sat-time">8:20–9:05</span></td>
+            <td><span class="pill p-dois">DIOIS</span></td>
+            <td class="empty"></td>
+            <td><span class="pill p-mat">MAT</span></td>
+            <td><span class="pill p-gr">GR</span></td>
+            <td><span class="pill p-fiz">FIZ</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">3.</span><span class="sat-time">9:10–9:55</span></td>
+            <td><span class="pill p-mik">MIK</span></td>
+            <td><span class="pill p-hrv">HRV</span></td>
+            <td><span class="pill p-fiz">FIZ</span></td>
+            <td><span class="pill p-gr">GR</span></td>
+            <td><span class="pill p-eng">ENG</span></td>
+          </tr>
+          <tr class="break-row">
+            <td colspan="6">
+              <div class="break-inner">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                VELIKI ODMOR &ensp;·&ensp; 9:55 – 10:15
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">4.</span><span class="sat-time">10:15–11:00</span></td>
+            <td><span class="pill p-mik">MIK</span></td>
+            <td><span class="pill p-vim">VIM</span></td>
+            <td><span class="pill p-tzk">TZK</span></td>
+            <td><span class="pill p-dbp">DBP</span></td>
+            <td><span class="pill p-hrv">HRV</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">5.</span><span class="sat-time">11:05–11:50</span></td>
+            <td><span class="pill p-rm">RM</span></td>
+            <td><span class="pill p-dois">DIOIS</span></td>
+            <td><span class="pill p-tzk">TZK</span></td>
+            <td><span class="pill p-dbp">DBP</span></td>
+            <td><span class="pill p-sr">SR</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">6.</span><span class="sat-time">11:55–12:40</span></td>
+            <td><span class="pill p-rm">RM</span></td>
+            <td><span class="pill p-dois">DIOIS</span></td>
+            <td><span class="pill p-os">OS</span></td>
+            <td><span class="pill p-hrv">HRV</span></td>
+            <td><span class="pill p-mat">MAT</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">7.</span><span class="sat-time">12:45–13:30</span></td>
+            <td><span class="pill p-mat">MAT</span></td>
+            <td class="empty"></td>
+            <td><span class="pill p-sjwp">SJWP</span></td>
+            <td><span class="pill p-os">OS</span></td>
+            <td><span class="pill p-mm">MM</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">8.</span><span class="sat-time">13:35–14:20</span></td>
+            <td><span class="pill p-vj">VJ</span></td>
+            <td class="empty"></td>
+            <td><span class="pill p-sjwp">SJWP</span></td>
+            <td><span class="pill p-eng">ENG</span></td>
+            <td><span class="pill p-mm">MM</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- POSLIJEPODNEVNA -->
+  <div id="popodne" class="tab-content">
+    <div class="tt-wrap">
+      <table class="tt-table">
+        <thead>
+          <tr><th>Sat</th><th>PON</th><th>UTO</th><th>SRI</th><th>ČET</th><th>PET</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="sat-num">0.</span><span class="sat-time">12:45–13:30</span></td>
+            <td class="empty"></td><td class="empty"></td>
+            <td><span class="pill p-rm">RM</span></td>
+            <td><span class="pill p-mat">MAT</span></td>
+            <td><span class="pill p-dois">DIOIS</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">1.</span><span class="sat-time">13:35–14:20</span></td>
+            <td class="empty"></td><td class="empty"></td>
+            <td><span class="pill p-fiz">FIZ</span></td>
+            <td><span class="pill p-eng">ENG</span></td>
+            <td><span class="pill p-dois">DIOIS</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">2.</span><span class="sat-time">14:25–15:10</span></td>
+            <td><span class="pill p-sjwp">SJWP</span></td>
+            <td><span class="pill p-hrv">HRV</span></td>
+            <td><span class="pill p-mat">MAT</span></td>
+            <td><span class="pill p-os">OS</span></td>
+            <td><span class="pill p-vj">VJ</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">3.</span><span class="sat-time">15:15–16:00</span></td>
+            <td><span class="pill p-sjwp">SJWP</span></td>
+            <td><span class="pill p-mm">MM</span></td>
+            <td><span class="pill p-mm">MM</span></td>
+            <td><span class="pill p-os">OS</span></td>
+            <td><span class="pill p-tzk">TZK</span></td>
+          </tr>
+          <tr class="break-row">
+            <td colspan="6">
+              <div class="break-inner">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                VELIKI ODMOR &ensp;·&ensp; 16:00 – 16:20
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">4.</span><span class="sat-time">16:20–17:05</span></td>
+            <td><span class="pill p-fiz">FIZ</span></td>
+            <td><span class="pill p-dbp">DBP</span></td>
+            <td><span class="pill p-vim">VIM</span></td>
+            <td><span class="pill p-hrv">HRV</span></td>
+            <td><span class="pill p-tzk">TZK</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">5.</span><span class="sat-time">17:10–17:55</span></td>
+            <td><span class="pill p-mat">MAT</span></td>
+            <td><span class="pill p-dbp">DBP</span></td>
+            <td><span class="pill p-hrv">HRV</span></td>
+            <td><span class="pill p-sr">SR</span></td>
+            <td><span class="pill p-gr">GR</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">6.</span><span class="sat-time">18:00–18:45</span></td>
+            <td><span class="pill p-gr">GR</span></td>
+            <td><span class="pill p-mik">MIK</span></td>
+            <td><span class="pill p-gr">GR</span></td>
+            <td><span class="pill p-mik">MIK</span></td>
+            <td><span class="pill p-rm">RM</span></td>
+          </tr>
+          <tr>
+            <td><span class="sat-num">7.</span><span class="sat-time">18:50–19:35</span></td>
+            <td><span class="pill p-eng">ENG</span></td>
+            <td class="empty"></td>
+            <td><span class="pill p-eng">ENG</span></td>
+            <td class="empty"></td><td class="empty"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>© 2026 Matija Šimić · Tehnička škola Ruđera Boškovića · Zagreb</footer>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('show'));
+  document.querySelectorAll('.tt-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('show');
+  btn.classList.add('active');
+  clearHighlight();
+}
+
+let activeSubject = null;
+
+function clearHighlight() {
+  document.querySelectorAll('.pill').forEach(p => {
+    p.classList.remove('pill-active', 'pill-dimmed');
+  });
+  activeSubject = null;
+}
+
+function initPills() {
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.style.cursor = 'pointer';
+    pill.addEventListener('click', e => {
+      e.stopPropagation();
+      const cls = Array.from(pill.classList).find(c => c.startsWith('p-'));
+      if (!cls) return;
+      if (activeSubject === cls) { clearHighlight(); return; }
+      activeSubject = cls;
+      document.querySelectorAll('.pill').forEach(p => {
+        if (p.classList.contains(cls)) {
+          p.classList.add('pill-active');
+          p.classList.remove('pill-dimmed');
+        } else {
+          p.classList.add('pill-dimmed');
+          p.classList.remove('pill-active');
+        }
+      });
+      spawnSparkle(pill);
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.pill')) clearHighlight();
+  });
+}
+
+function spawnSparkle(el) {
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width  / 2 + window.scrollX;
+  const cy = r.top  + r.height / 2 + window.scrollY;
+  const s = document.createElement('div');
+  s.className = 'pill-spark';
+  s.style.left = cx + 'px';
+  s.style.top  = cy + 'px';
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 700);
+}
+
+document.addEventListener('DOMContentLoaded', initPills);
+</script>
+<style>
+  .pill { transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s, filter 0.2s; }
+  .pill-active {
+    transform: scale(1.14) !important;
+    filter: brightness(1.35) !important;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.3), 0 0 16px rgba(139,92,246,0.55) !important;
+    opacity: 1 !important;
+    position: relative; z-index: 10;
+  }
+  .pill-dimmed { opacity: 0.18 !important; filter: saturate(0.15) !important; }
+  .pill-spark {
+    position: absolute; width: 28px; height: 28px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(167,139,250,0.85) 0%, transparent 70%);
+    transform: translate(-50%, -50%) scale(0);
+    animation: spark-pop 0.55s ease-out forwards;
+    pointer-events: none; z-index: 9999;
+  }
+  @keyframes spark-pop {
+    0%   { transform: translate(-50%,-50%) scale(0);   opacity: 1; }
+    35%  { transform: translate(-50%,-50%) scale(2.2); opacity: 0.7; }
+    100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; }
+  }
+</style>
+<script src="assets/hover.js"></script>
+</body>
+</html>

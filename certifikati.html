@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Matija Šimić">
+  <meta name="description" content="Certifikati i izvannastavne aktivnosti — AWS, Cisco, Microsoft Azure. Matija Šimić, TSRB Zagreb.">
+  <meta property="og:title" content="Certifikati · Šimić Matija">
+  <meta property="og:description" content="Certifikati i izvannastavne aktivnosti — AWS, Cisco, Microsoft Azure. Matija Šimić, TSRB Zagreb.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <title>Certifikati · Šimić Matija</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+
+    .cert-section { display:flex; flex-direction:column; align-items:center; gap:2.5rem; }
+
+    /* ─── CARD ─── */
+    .cert-premium {
+      width:100%; max-width:760px; border-radius:16px; overflow:hidden;
+      border:1px solid rgba(139,92,246,0.22); background:#07070d;
+      position:relative; cursor:default;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(139,92,246,0.06);
+      --gx: 50%; --gy: 50%;
+    }
+    /* reactive glow follows mouse */
+    .cert-premium::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 16px; z-index: 1; pointer-events: none;
+      background: radial-gradient(80px circle at var(--gx) var(--gy), rgba(139,92,246,0.22), transparent 70%);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .cert-premium:hover::before { opacity: 1; }
+    .cert-premium:hover {
+      border-color: rgba(139,92,246,0.68);
+      transform: translateY(-5px) scale(1.018);
+      box-shadow:
+        0 0 0 1px rgba(139,92,246,0.24),
+        0 0 14px rgba(139,92,246,0.48),
+        0 18px 56px rgba(139,92,246,0.26),
+        0 6px 20px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(139,92,246,0.15);
+    }
+
+    /* ─── DIPLOMA ─── */
+    .cert-preview { height: 210px; position:relative; overflow:hidden; }
+    .diploma-svg {
+      position:absolute; inset:0; width:100%; height:100%;
+      filter: blur(0.5px); opacity: 0.84;
+      transition: opacity 0.3s, filter 0.3s;
+    }
+    .cert-premium:hover .diploma-svg { opacity:0.94; filter:blur(0.2px); }
+    .cert-overlay {
+      position:absolute; inset:0;
+      background: linear-gradient(to bottom, rgba(7,7,13,0.01) 0%, rgba(7,7,13,0.28) 42%, rgba(7,7,13,0.97) 100%);
+    }
+
+    /* ─── BODY ─── */
+    .cert-body {
+      padding: 1.3rem 1.6rem 1.5rem;
+      display: flex; gap: 1.35rem; align-items: flex-start;
+      position: relative; z-index: 1;
+    }
+    .cert-body::before {
+      content: ''; position:absolute; top:0; left:1.6rem; right:1.6rem; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent);
+      z-index: 2;
+    }
+
+    /* ─── ICON BOX ─── */
+    .cert-icon-box {
+      flex-shrink:0; width:64px; height:64px; border-radius:14px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      background: linear-gradient(145deg, #130a30, #1d0f48);
+      border: 1px solid rgba(139,92,246,0.32);
+      box-shadow: 0 2px 16px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s; position:relative; z-index:1;
+    }
+    .cert-premium:hover .cert-icon-box {
+      border-color: rgba(139,92,246,0.68); transform: scale(1.08);
+      box-shadow: 0 4px 30px rgba(139,92,246,0.46), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .cert-icon-box svg {
+      width:30px; height:30px;
+      filter: drop-shadow(0 0 5px rgba(167,139,250,0.72)) drop-shadow(0 0 12px rgba(139,92,246,0.45));
+      transition: filter 0.3s;
+    }
+    .cert-premium:hover .cert-icon-box svg {
+      filter: drop-shadow(0 0 8px rgba(167,139,250,1)) drop-shadow(0 0 20px rgba(139,92,246,0.82)) drop-shadow(0 0 36px rgba(139,92,246,0.45));
+    }
+    .cert-icon-lbl {
+      font-family:'Outfit',sans-serif; font-size:0.42rem; font-weight:800;
+      color:rgba(167,139,250,0.65); text-transform:uppercase; letter-spacing:0.07em; text-align:center; line-height:1.2;
+    }
+
+    /* ─── TEXT HIERARCHY ─── */
+    .cert-content { flex:1; min-width:0; position:relative; z-index:1; }
+    .cert-title {
+      font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:700;
+      color:#e8e0ff; letter-spacing:-0.01em; margin-bottom:0.16rem; line-height:1.3;
+    }
+    .cert-sub  { font-size:0.76rem; color:#42427a; margin-bottom:0.55rem; }
+    .cert-desc { font-size:0.83rem; color:#70708a; line-height:1.65; margin-bottom:0.8rem; }
+
+    /* ─── CHIPS ─── */
+    .cert-chips { display:flex; flex-wrap:wrap; gap:0.4rem; }
+    .chip {
+      display:inline-flex; align-items:center; gap:0.35rem;
+      background:rgba(139,92,246,0.07); border:1px solid rgba(139,92,246,0.17);
+      color:#8080aa; border-radius:100px; padding:0.22rem 0.7rem;
+      font-size:0.72rem; font-weight:500;
+      transition:background 0.2s,border-color 0.2s,color 0.2s,transform 0.2s,box-shadow 0.2s;
+    }
+    .chip:hover { background:rgba(139,92,246,0.16); border-color:rgba(139,92,246,0.45); color:#c4b5fd; transform:translateY(-2px); box-shadow:0 0 10px rgba(139,92,246,0.32),0 3px 12px rgba(139,92,246,0.18); }
+    .chip svg { width:12px; height:12px; opacity:0.65; flex-shrink:0; }
+    .chip-issuer svg { width:15px; height:15px; opacity:0.9; }
+    .chip-issuer { padding:0.22rem 0.75rem; }
+    .chip-verified { background:rgba(139,92,246,0.09); border-color:rgba(139,92,246,0.26); color:#a78bfa; }
+    .chip-verified:hover { background:rgba(139,92,246,0.22); border-color:rgba(139,92,246,0.58); color:#c4b5fd; box-shadow:0 0 12px rgba(139,92,246,0.45),0 3px 14px rgba(139,92,246,0.28); }
+    .chip-verified svg { opacity:1; }
+    .v-badge { display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,#7c3aed,#a855f7); box-shadow:0 1px 7px rgba(139,92,246,0.55); }
+    .v-badge svg { width:9px; height:9px; }
+
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">MŠ.</a>
+  <a href="index.html">Početna</a>
+  <div class="nav-group">
+    <button class="nav-trigger">Predmeti <span class="nav-trigger-arrow">▾</span></button>
+    <div class="nav-dropdown">
+      <a href="sjwp.html">SJWP</a>
+      <a href="multimedija.html">MM</a>
+      <a href="dijagnostika.html">DIOIS</a>
+    </div>
+  </div>
+  <a href="poveznice.html">Poveznice</a>
+  <a href="raspored.html">Raspored</a>
+  <a href="certifikati.html" class="active">Certifikati</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Izvanškolski uspjesi</div>
+  <h1>Certifikati i aktivnosti</h1>
+  <p>Izvannastavne aktivnosti i potvrde koje sam stekao izvan redovne škole.</p>
+</div>
+
+<div class="container" style="padding-top:0;">
+  <hr>
+  <h2>Certifikati</h2>
+
+  <div class="cert-section">
+
+    <!-- ════ SHARED DEFS — referenced by all 3 diplomas ════ -->
+    <svg style="position:absolute;width:0;height:0;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="parch" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stop-color="#f8efd2"/>
+          <stop offset="25%"  stop-color="#f3e4b0"/>
+          <stop offset="60%"  stop-color="#edda96"/>
+          <stop offset="100%" stop-color="#e7ce80"/>
+        </linearGradient>
+        <radialGradient id="parch-vig" cx="50%" cy="50%" r="68%">
+          <stop offset="0%"   stop-color="transparent"/>
+          <stop offset="100%" stop-color="rgba(90,50,0,0.24)"/>
+        </radialGradient>
+        <filter id="grain" x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch" result="noise"/>
+          <feColorMatrix in="noise" type="saturate" values="0" result="grey"/>
+          <feBlend in="SourceGraphic" in2="grey" mode="multiply" result="blended"/>
+          <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+        </filter>
+        <filter id="sig-blur">
+          <feGaussianBlur stdDeviation="1.2"/>
+        </filter>
+        <linearGradient id="badge-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#1a1208"/>
+          <stop offset="100%" stop-color="#0d0a04"/>
+        </linearGradient>
+        <linearGradient id="badge-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"  stop-color="#a07000"/>
+          <stop offset="35%" stop-color="#e8a000"/>
+          <stop offset="65%" stop-color="#f5c030"/>
+          <stop offset="100%" stop-color="#b88000"/>
+        </linearGradient>
+        <linearGradient id="badge-teal" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"  stop-color="#006858"/>
+          <stop offset="40%" stop-color="#00b898"/>
+          <stop offset="100%" stop-color="#005048"/>
+        </linearGradient>
+        <linearGradient id="badge-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"  stop-color="#003288"/>
+          <stop offset="40%" stop-color="#0068c8"/>
+          <stop offset="100%" stop-color="#002060"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- ════ AWS ════ -->
+    <div class="cert-premium" data-cert>
+      <div class="cert-preview">
+        <svg class="diploma-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 210" preserveAspectRatio="xMidYMid slice">
+          <!-- PAPER + TEXTURE + VIGNETTE -->
+          <rect width="760" height="210" fill="url(#parch)"/>
+          <rect width="760" height="210" fill="url(#parch-vig)"/>
+          <rect width="760" height="210" fill="rgba(150,100,20,0.055)" filter="url(#grain)"/>
+
+          <!-- DOUBLE BORDER -->
+          <rect x="8" y="7" width="744" height="196" rx="5" fill="none" stroke="#a87808" stroke-width="2.2" opacity="0.52"/>
+          <rect x="15" y="14" width="730" height="182" rx="3" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.32"/>
+
+          <!-- CORNER ORNAMENTS -->
+          <path d="M8 36 L8 7 L37 7"   fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="22" cy="21" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M752 36 L752 7 L723 7" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="738" cy="21" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M8 174 L8 203 L37 203" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="22" cy="189" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M752 174 L752 203 L723 203" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="738" cy="189" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+
+          <!-- ISSUER BLOCK — top left, bigger + more prominent -->
+          <rect x="22" y="15" width="130" height="34" rx="4" fill="rgba(160,100,8,0.12)"/>
+          <line x1="22" y1="49" x2="152" y2="49" stroke="#a87808" stroke-width="0.6" opacity="0.4"/>
+          <text x="87" y="29" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#6a4008" font-weight="bold" letter-spacing="2" opacity="0.9">AMAZON WEB</text>
+          <text x="87" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#6a4008" font-weight="bold" letter-spacing="1.5" opacity="0.82">SERVICES ACADEMY</text>
+
+          <!-- GOLD STAR — top center -->
+          <text x="380" y="38" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#c49416" opacity="0.7">★</text>
+
+          <!-- DATE BADGE — top right, bigger -->
+          <circle cx="698" cy="32" r="26" fill="url(#badge-dark)" stroke="url(#badge-gold)" stroke-width="2.2"/>
+          <circle cx="698" cy="32" r="19" fill="none" stroke="rgba(220,165,20,0.5)" stroke-width="0.9"/>
+          <circle cx="698" cy="32" r="10" fill="rgba(200,135,0,0.18)"/>
+          <text x="698" y="27" text-anchor="middle" font-family="'Courier New',monospace" font-size="9.5" fill="#f0c030" font-weight="bold" letter-spacing="0.5">2025</text>
+          <text x="698" y="38" text-anchor="middle" font-family="'Courier New',monospace" font-size="5.5" fill="#c89018" letter-spacing="1.5" font-weight="bold">CERTIFIED</text>
+          <!-- stars around badge -->
+          <text x="668" y="20" text-anchor="middle" font-family="serif" font-size="8" fill="#c49416" opacity="0.45">★</text>
+          <text x="728" y="20" text-anchor="middle" font-family="serif" font-size="8" fill="#c49416" opacity="0.45">★</text>
+
+          <!-- HEADER DIVIDER -->
+          <line x1="38" y1="56" x2="722" y2="56" stroke="#a87808" stroke-width="0.9" opacity="0.42"/>
+          <line x1="38" y1="58" x2="722" y2="58" stroke="#a87808" stroke-width="0.35" opacity="0.22"/>
+
+          <!-- DIPLOMA BODY — clear hierarchy -->
+          <!-- 1. CERTIFY LINE -->
+          <text x="380" y="78" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="9.5" fill="#5a3808" opacity="0.55" letter-spacing="5">CERTIFICATE OF COMPLETION</text>
+          <!-- 2. THIS IS TO CERTIFY italic -->
+          <text x="380" y="97" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#6a4810" opacity="0.58" font-style="italic" letter-spacing="2">This is to certify that</text>
+          <!-- 3. NAME — biggest element -->
+          <text x="380" y="128" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="25" fill="#28180a" font-weight="bold" opacity="0.9" letter-spacing="3">Matija Šimić</text>
+          <!-- 4. HAS COMPLETED -->
+          <text x="380" y="146" text-anchor="middle" font-family="Georgia,serif" font-size="8.5" fill="#6a4810" opacity="0.55" font-style="italic" letter-spacing="2">has successfully completed the course</text>
+          <!-- 5. COURSE NAME -->
+          <text x="380" y="165" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="14" fill="#28180a" font-weight="bold" opacity="0.82" letter-spacing="1.5">AWS Academy Cloud Foundations</text>
+          <!-- GOLD STARS flanking course name -->
+          <text x="180" y="165" text-anchor="middle" font-family="serif" font-size="10" fill="#c49416" opacity="0.5">★</text>
+          <text x="580" y="165" text-anchor="middle" font-family="serif" font-size="10" fill="#c49416" opacity="0.5">★</text>
+
+          <!-- SIGNATURE + DATE — blurred text, visible but not readable -->
+          <g filter="url(#sig-blur)" opacity="0.38">
+            <line x1="88" y1="188" x2="245" y2="188" stroke="#8a5c08" stroke-width="1"/>
+            <line x1="515" y1="188" x2="672" y2="188" stroke="#8a5c08" stroke-width="1"/>
+            <path d="M100 182 C122 174 142 186 164 178 C180 172 195 182 215 178" fill="none" stroke="#5a3208" stroke-width="1.5"/>
+            <path d="M527 182 C549 174 569 186 591 178 C607 172 622 182 642 178" fill="none" stroke="#5a3208" stroke-width="1.5"/>
+            <text x="167" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#7a5010" letter-spacing="1.5">Dr. Andrew Jassy</text>
+            <text x="167" y="207" text-anchor="middle" font-family="'Courier New',monospace" font-size="5" fill="#7a5010" letter-spacing="1">AUTHORIZED INSTRUCTOR</text>
+            <text x="594" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#7a5010" letter-spacing="1.5">January 2025</text>
+            <text x="594" y="207" text-anchor="middle" font-family="'Courier New',monospace" font-size="5" fill="#7a5010" letter-spacing="1">DATE ISSUED</text>
+          </g>
+
+          <!-- SEALS -->
+          <circle cx="56" cy="183" r="21" fill="none" stroke="#a87808" stroke-width="1.4" opacity="0.38"/>
+          <circle cx="56" cy="183" r="15" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.26"/>
+          <circle cx="56" cy="183" r="6"  fill="rgba(180,130,15,0.22)"/>
+          <text x="56" y="187" text-anchor="middle" font-family="serif" font-size="7" fill="#a87808" opacity="0.4">★</text>
+          <circle cx="704" cy="183" r="21" fill="none" stroke="#a87808" stroke-width="1.4" opacity="0.38"/>
+          <circle cx="704" cy="183" r="15" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.26"/>
+          <circle cx="704" cy="183" r="6"  fill="rgba(180,130,15,0.22)"/>
+          <text x="704" y="187" text-anchor="middle" font-family="serif" font-size="7" fill="#a87808" opacity="0.4">★</text>
+        </svg>
+        <div class="cert-overlay"></div>
+      </div>
+      <div class="cert-body">
+        <div class="cert-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 16 12 12 8 16"/>
+            <line x1="12" y1="12" x2="12" y2="21"/>
+            <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+          </svg>
+          <div class="cert-icon-lbl">AWS<br>Academy</div>
+        </div>
+        <div class="cert-content">
+          <div class="cert-title">AWS Academy Cloud Foundations</div>
+          <div class="cert-sub">Amazon Web Services Training and Certification · 2025.</div>
+          <div class="cert-desc">Arhitektura AWS infrastrukture, ključni cloud servisi, sigurnosni modeli i model naplate u oblaku.</div>
+          <div class="cert-chips">
+            <span class="chip chip-issuer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10l-10-5L2 10l10 5 10-5z"/><path d="M6 12.5v4C6 18.43 8.69 20 12 20s6-1.57 6-3.5v-4"/><line x1="22" y1="10" x2="22" y2="15"/></svg>AWS</span>
+            <span class="chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                <circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/>
+              </svg>
+              2025.
+            </span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~20h</span>
+            <span class="chip chip-verified"><span class="v-badge"><svg viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5l2 2 4-4"/></svg></span>Verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ CISCO ════ -->
+    <div class="cert-premium" data-cert>
+      <div class="cert-preview">
+        <svg class="diploma-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 210" preserveAspectRatio="xMidYMid slice">
+          <rect width="760" height="210" fill="url(#parch)"/>
+          <rect width="760" height="210" fill="url(#parch-vig)"/>
+          <rect width="760" height="210" fill="rgba(150,100,20,0.055)" filter="url(#grain)"/>
+          <rect x="8" y="7" width="744" height="196" rx="5" fill="none" stroke="#a87808" stroke-width="2.2" opacity="0.52"/>
+          <rect x="15" y="14" width="730" height="182" rx="3" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.32"/>
+          <path d="M8 36 L8 7 L37 7" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="22" cy="21" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M752 36 L752 7 L723 7" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="738" cy="21" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M8 174 L8 203 L37 203" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="22" cy="189" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M752 174 L752 203 L723 203" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="738" cy="189" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+
+          <rect x="22" y="15" width="130" height="34" rx="4" fill="rgba(160,100,8,0.12)"/>
+          <line x1="22" y1="49" x2="152" y2="49" stroke="#a87808" stroke-width="0.6" opacity="0.4"/>
+          <text x="87" y="29" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#6a4008" font-weight="bold" letter-spacing="2" opacity="0.9">CISCO</text>
+          <text x="87" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#6a4008" font-weight="bold" letter-spacing="1.5" opacity="0.82">NETWORKING ACADEMY</text>
+
+          <text x="380" y="38" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#c49416" opacity="0.7">★</text>
+
+          <!-- TEAL BADGE -->
+          <circle cx="698" cy="32" r="26" fill="url(#badge-dark)" stroke="url(#badge-gold)" stroke-width="2.2"/>
+          <circle cx="698" cy="32" r="19" fill="none" stroke="rgba(220,165,20,0.5)" stroke-width="0.9"/>
+          <circle cx="698" cy="32" r="10" fill="rgba(200,135,0,0.18)"/>
+          <text x="698" y="27" text-anchor="middle" font-family="'Courier New',monospace" font-size="9.5" fill="#f0c030" font-weight="bold" letter-spacing="0.5">2025</text>
+          <text x="698" y="38" text-anchor="middle" font-family="'Courier New',monospace" font-size="5.5" fill="#c89018" letter-spacing="1.5" font-weight="bold">CERTIFIED</text>
+          <text x="668" y="20" text-anchor="middle" font-family="serif" font-size="8" fill="#c49416" opacity="0.45">★</text>
+          <text x="728" y="20" text-anchor="middle" font-family="serif" font-size="8" fill="#c49416" opacity="0.45">★</text>
+
+          <line x1="38" y1="56" x2="722" y2="56" stroke="#a87808" stroke-width="0.9" opacity="0.42"/>
+          <line x1="38" y1="58" x2="722" y2="58" stroke="#a87808" stroke-width="0.35" opacity="0.22"/>
+
+          <text x="380" y="78" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="9.5" fill="#5a3808" opacity="0.55" letter-spacing="5">CERTIFICATE OF COMPLETION</text>
+          <text x="380" y="97" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#6a4810" opacity="0.58" font-style="italic" letter-spacing="2">This is to certify that</text>
+          <text x="380" y="128" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="25" fill="#28180a" font-weight="bold" opacity="0.9" letter-spacing="3">Matija Šimić</text>
+          <text x="380" y="146" text-anchor="middle" font-family="Georgia,serif" font-size="8.5" fill="#6a4810" opacity="0.55" font-style="italic" letter-spacing="2">has successfully completed the course</text>
+          <text x="380" y="165" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="14" fill="#28180a" font-weight="bold" opacity="0.82" letter-spacing="1.5">Introduction to Cybersecurity</text>
+          <text x="180" y="165" text-anchor="middle" font-family="serif" font-size="10" fill="#c49416" opacity="0.5">★</text>
+          <text x="580" y="165" text-anchor="middle" font-family="serif" font-size="10" fill="#c49416" opacity="0.5">★</text>
+
+          <g filter="url(#sig-blur)" opacity="0.38">
+            <line x1="88" y1="188" x2="245" y2="188" stroke="#8a5c08" stroke-width="1"/>
+            <line x1="515" y1="188" x2="672" y2="188" stroke="#8a5c08" stroke-width="1"/>
+            <path d="M100 182 C122 174 142 186 164 178 C180 172 195 182 215 178" fill="none" stroke="#5a3208" stroke-width="1.5"/>
+            <path d="M527 182 C549 174 569 186 591 178 C607 172 622 182 642 178" fill="none" stroke="#5a3208" stroke-width="1.5"/>
+            <text x="167" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#7a5010" letter-spacing="1.5">Chuck Robbins, CEO</text>
+            <text x="167" y="207" text-anchor="middle" font-family="'Courier New',monospace" font-size="5" fill="#7a5010" letter-spacing="1">AUTHORIZED INSTRUCTOR</text>
+            <text x="594" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#7a5010" letter-spacing="1.5">January 2025</text>
+            <text x="594" y="207" text-anchor="middle" font-family="'Courier New',monospace" font-size="5" fill="#7a5010" letter-spacing="1">DATE ISSUED</text>
+          </g>
+
+          <circle cx="56" cy="183" r="21" fill="none" stroke="#a87808" stroke-width="1.4" opacity="0.38"/>
+          <circle cx="56" cy="183" r="15" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.26"/>
+          <text x="56" y="187" text-anchor="middle" font-family="serif" font-size="7" fill="#a87808" opacity="0.4">★</text>
+          <circle cx="704" cy="183" r="21" fill="none" stroke="#a87808" stroke-width="1.4" opacity="0.38"/>
+          <circle cx="704" cy="183" r="15" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.26"/>
+          <text x="704" y="187" text-anchor="middle" font-family="serif" font-size="7" fill="#a87808" opacity="0.4">★</text>
+        </svg>
+        <div class="cert-overlay"></div>
+      </div>
+      <div class="cert-body">
+        <div class="cert-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l7 3.5v5C19 16.2 16 20.6 12 22 8 20.6 5 16.2 5 10.5V5.5L12 2z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <div class="cert-icon-lbl">Cisco<br>NetAcad</div>
+        </div>
+        <div class="cert-content">
+          <div class="cert-title">Introduction to Cybersecurity</div>
+          <div class="cert-sub">Cisco Networking Academy · 2025.</div>
+          <div class="cert-desc">Prijetnje, ranjivosti, zaštita mreža i privatnost u digitalnom okruženju — osnove kibernetičke sigurnosti.</div>
+          <div class="cert-chips">
+            <span class="chip chip-issuer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10l-10-5L2 10l10 5 10-5z"/><path d="M6 12.5v4C6 18.43 8.69 20 12 20s6-1.57 6-3.5v-4"/><line x1="22" y1="10" x2="22" y2="15"/></svg>Cisco</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg>2025.</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~15h</span>
+            <span class="chip chip-verified"><span class="v-badge"><svg viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5l2 2 4-4"/></svg></span>Verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ AZURE ════ -->
+    <div class="cert-premium" data-cert>
+      <div class="cert-preview">
+        <svg class="diploma-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 210" preserveAspectRatio="xMidYMid slice">
+          <rect width="760" height="210" fill="url(#parch)"/>
+          <rect width="760" height="210" fill="url(#parch-vig)"/>
+          <rect width="760" height="210" fill="rgba(150,100,20,0.055)" filter="url(#grain)"/>
+          <rect x="8" y="7" width="744" height="196" rx="5" fill="none" stroke="#a87808" stroke-width="2.2" opacity="0.52"/>
+          <rect x="15" y="14" width="730" height="182" rx="3" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.32"/>
+          <path d="M8 36 L8 7 L37 7" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="22" cy="21" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M752 36 L752 7 L723 7" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="738" cy="21" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M8 174 L8 203 L37 203" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="22" cy="189" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+          <path d="M752 174 L752 203 L723 203" fill="none" stroke="#a87808" stroke-width="2" opacity="0.68"/>
+          <circle cx="738" cy="189" r="5" fill="none" stroke="#a87808" stroke-width="1.2" opacity="0.5"/>
+
+          <rect x="22" y="15" width="130" height="34" rx="4" fill="rgba(160,100,8,0.12)"/>
+          <line x1="22" y1="49" x2="152" y2="49" stroke="#a87808" stroke-width="0.6" opacity="0.4"/>
+          <text x="87" y="29" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#6a4008" font-weight="bold" letter-spacing="2" opacity="0.9">MICROSOFT</text>
+          <text x="87" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#6a4008" font-weight="bold" letter-spacing="1.5" opacity="0.82">LEARN</text>
+
+          <text x="380" y="38" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#c49416" opacity="0.7">★</text>
+
+          <!-- BLUE BADGE — 2026 -->
+          <circle cx="698" cy="32" r="26" fill="url(#badge-dark)" stroke="url(#badge-gold)" stroke-width="2.2"/>
+          <circle cx="698" cy="32" r="19" fill="none" stroke="rgba(220,165,20,0.5)" stroke-width="0.9"/>
+          <circle cx="698" cy="32" r="10" fill="rgba(200,135,0,0.18)"/>
+          <text x="698" y="27" text-anchor="middle" font-family="'Courier New',monospace" font-size="9.5" fill="#f0c030" font-weight="bold" letter-spacing="0.5">2026</text>
+          <text x="698" y="38" text-anchor="middle" font-family="'Courier New',monospace" font-size="5.5" fill="#c89018" letter-spacing="1.5" font-weight="bold">CERTIFIED</text>
+          <text x="668" y="20" text-anchor="middle" font-family="serif" font-size="8" fill="#c49416" opacity="0.45">★</text>
+          <text x="728" y="20" text-anchor="middle" font-family="serif" font-size="8" fill="#c49416" opacity="0.45">★</text>
+
+          <line x1="38" y1="56" x2="722" y2="56" stroke="#a87808" stroke-width="0.9" opacity="0.42"/>
+          <line x1="38" y1="58" x2="722" y2="58" stroke="#a87808" stroke-width="0.35" opacity="0.22"/>
+
+          <text x="380" y="78" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="9.5" fill="#5a3808" opacity="0.55" letter-spacing="5">CERTIFICATE OF COMPLETION</text>
+          <text x="380" y="97" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#6a4810" opacity="0.58" font-style="italic" letter-spacing="2">This is to certify that</text>
+          <text x="380" y="128" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="25" fill="#28180a" font-weight="bold" opacity="0.9" letter-spacing="3">Matija Šimić</text>
+          <text x="380" y="146" text-anchor="middle" font-family="Georgia,serif" font-size="8.5" fill="#6a4810" opacity="0.55" font-style="italic" letter-spacing="2">has successfully completed the course</text>
+          <text x="380" y="165" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="14" fill="#28180a" font-weight="bold" opacity="0.82" letter-spacing="1.5">Azure Fundamentals (AZ-900)</text>
+          <text x="180" y="165" text-anchor="middle" font-family="serif" font-size="10" fill="#c49416" opacity="0.5">★</text>
+          <text x="580" y="165" text-anchor="middle" font-family="serif" font-size="10" fill="#c49416" opacity="0.5">★</text>
+
+          <g filter="url(#sig-blur)" opacity="0.38">
+            <line x1="88" y1="188" x2="245" y2="188" stroke="#8a5c08" stroke-width="1"/>
+            <line x1="515" y1="188" x2="672" y2="188" stroke="#8a5c08" stroke-width="1"/>
+            <path d="M100 182 C122 174 142 186 164 178 C180 172 195 182 215 178" fill="none" stroke="#5a3208" stroke-width="1.5"/>
+            <path d="M527 182 C549 174 569 186 591 178 C607 172 622 182 642 178" fill="none" stroke="#5a3208" stroke-width="1.5"/>
+            <text x="167" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#7a5010" letter-spacing="1.5">Satya Nadella, CEO</text>
+            <text x="167" y="207" text-anchor="middle" font-family="'Courier New',monospace" font-size="5" fill="#7a5010" letter-spacing="1">AUTHORIZED INSTRUCTOR</text>
+            <text x="594" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#7a5010" letter-spacing="1.5">January 2026</text>
+            <text x="594" y="207" text-anchor="middle" font-family="'Courier New',monospace" font-size="5" fill="#7a5010" letter-spacing="1">DATE ISSUED</text>
+          </g>
+
+          <circle cx="56" cy="183" r="21" fill="none" stroke="#a87808" stroke-width="1.4" opacity="0.38"/>
+          <circle cx="56" cy="183" r="15" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.26"/>
+          <text x="56" y="187" text-anchor="middle" font-family="serif" font-size="7" fill="#a87808" opacity="0.4">★</text>
+          <circle cx="704" cy="183" r="21" fill="none" stroke="#a87808" stroke-width="1.4" opacity="0.38"/>
+          <circle cx="704" cy="183" r="15" fill="none" stroke="#c49416" stroke-width="0.8" opacity="0.26"/>
+          <text x="704" y="187" text-anchor="middle" font-family="serif" font-size="7" fill="#a87808" opacity="0.4">★</text>
+        </svg>
+        <div class="cert-overlay"></div>
+      </div>
+      <div class="cert-body">
+        <div class="cert-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10l-10-5L2 10l10 5 10-5z"/>
+            <path d="M6 12.5v4C6 18.43 8.69 20 12 20s6-1.57 6-3.5v-4"/>
+            <line x1="22" y1="10" x2="22" y2="15"/>
+          </svg>
+          <div class="cert-icon-lbl">Microsoft<br>Azure</div>
+        </div>
+        <div class="cert-content">
+          <div class="cert-title">Microsoft Azure Fundamentals (AZ-900)</div>
+          <div class="cert-sub">Microsoft Learn · 2026.</div>
+          <div class="cert-desc">Temeljni koncepti clouda — virtualni strojevi, pohrana, mreže, upravljanje identitetom i Azure servisi.</div>
+          <div class="cert-chips">
+            <span class="chip chip-issuer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10l-10-5L2 10l10 5 10-5z"/><path d="M6 12.5v4C6 18.43 8.69 20 12 20s6-1.57 6-3.5v-4"/><line x1="22" y1="10" x2="22" y2="15"/></svg>Microsoft</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg>2026.</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~10h</span>
+            <span class="chip chip-verified"><span class="v-badge"><svg viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5l2 2 4-4"/></svg></span>Verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cert-section -->
+
+  <hr>
+  <h2>Izvannastavne aktivnosti</h2>
+  <div class="activity-grid">
+    <div class="activity-card">
+      <div style="margin-bottom:0.6rem;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px rgba(139,92,246,0.5));">
+          <circle cx="14" cy="3.5" r="1.5"/>
+          <path d="M9 18l3-5 2 2 2-4"/>
+          <path d="M5 21l4-3 2.5-1"/>
+          <path d="M17 8l-3 2-2-2-3 1"/>
+        </svg>
+      </div>
+      <h3>Trčanje</h3>
+      <p>Istrčao sam maraton — 42 km gdje shvatiš da glava odustaje prije nego noge.</p>
+    </div>
+    <div class="activity-card">
+      <div style="margin-bottom:0.6rem;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px rgba(139,92,246,0.5));">
+          <circle cx="8" cy="4" r="2"/><circle cx="16" cy="4" r="2"/>
+          <path d="M6 8c0 0 0 4 6 4s6-4 6-4"/>
+          <path d="M4 12l4 2 4-2 4 2 4-2"/>
+          <path d="M6 16l-2 6M18 16l2 6"/>
+        </svg>
+      </div>
+      <h3>Hrvanje</h3>
+      <p>Aktivno se bavim hrvanjem. Sport u kojemu taktika vrijedi koliko i snaga.</p>
+    </div>
+    <div class="activity-card">
+      <div style="margin-bottom:0.6rem;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 5px rgba(139,92,246,0.5));">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+        </svg>
+      </div>
+      <h3>Web dizajn</h3>
+      <p>Samostalno učim web dizajn i razvoj. Primjenjujem HTML, CSS i alate u stvarnim projektima.</p>
+    </div>
+  </div>
+
+</div>
+<footer>© 2026 Matija Šimić · Tehnička škola Ruđera Boškovića · Zagreb</footer>
+<script src="assets/hover.js"></script>
+</body>
+</html>

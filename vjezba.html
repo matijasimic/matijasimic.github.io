@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Matija Šimić">
+  <meta name="description" content="11_LV_SJWP — HTML forma i tablica, živa demonstracija. Matija Šimić, TSRB Zagreb.">
+  <meta property="og:title" content="LV11 · HTML forma · Šimić Matija">
+  <meta property="og:description" content="11_LV_SJWP — HTML forma i tablica, živa demonstracija. Matija Šimić, TSRB Zagreb.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <title>11_LV_SJWP – HTML forma i tablica · Matija Šimić</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .result-table { width:100%; border-collapse:collapse; margin-top:1.25rem; display:none; }
+    .result-table th { background:rgba(139,92,246,0.15); color:var(--accent); padding:0.6rem 0.9rem; text-align:left; border-bottom:1px solid rgba(139,92,246,0.3); font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:600; }
+    .result-table td { padding:0.6rem 0.9rem; border-bottom:1px solid var(--border); color:#ccccee; transition:background 0.15s, color 0.15s; }
+    .result-table tr:hover td { background:rgba(139,92,246,0.1); color:#fff; }
+    .success { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); color:#4ade80; padding:0.75rem 1rem; border-radius:var(--radius); margin-top:0.75rem; display:none; font-size:0.85rem; }
+    .counter { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.25); color:var(--accent); padding:0.3rem 0.75rem; border-radius:100px; font-size:0.8rem; font-weight:600; margin-bottom:1rem; }
+    .form-2col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    input[list] { accent-color: #8b5cf6; }
+    /* disabled state for platforma when sati=0 */
+    input:disabled { opacity: 0.35; cursor: not-allowed; }
+    #platforma-group { transition: opacity 0.2s; }
+    #platforma-group.disabled-group { opacity: 0.4; pointer-events: none; }
+    #platforma-group .nijedna-badge {
+      display: none; margin-top: 0.35rem;
+      font-size: 0.75rem; color: #6060a0;
+    }
+    #platforma-group.disabled-group .nijedna-badge { display: block; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">MŠ.</a>
+  <a href="index.html">Početna</a>
+  <div class="nav-group">
+    <button class="nav-trigger">Predmeti <span class="nav-trigger-arrow">▾</span></button>
+    <div class="nav-dropdown">
+      <a href="sjwp.html" class="active">SJWP</a>
+      <a href="multimedija.html">MM</a>
+      <a href="dijagnostika.html">DIOIS</a>
+    </div>
+  </div>
+  <a href="poveznice.html">Poveznice</a>
+  <a href="raspored.html">Raspored</a>
+  <a href="certifikati.html">Certifikati</a>
+</nav>
+
+<div class="hero">
+  <div class="label">Skriptni jezici i web programiranje · 11_LV_SJWP</div>
+  <h1>HTML forma i tablica</h1>
+  <p>Interaktivna forma s unosom podataka i dinamička tablica koja se puni JavaScriptom bez osvježavanja stranice.</p>
+  <div style="margin-top:0.5rem;"><span class="tag tag-gray">Učenik Šimić Matija</span></div>
+</div>
+
+<div class="container" style="padding-top:0;">
+  <hr>
+
+  <h2>Živa demonstracija</h2>
+  <p>Ispuni formu i podaci se odmah pojavljuju u tablici ispod.</p>
+
+  <div class="demo">
+    <div class="counter" id="counter">0 odgovora</div>
+
+    <datalist id="platforme">
+      <option value="TikTok"><option value="Instagram">
+      <option value="YouTube"><option value="Snapchat">
+      <option value="Twitter / X"><option value="Facebook">
+      <option value="WhatsApp"><option value="Discord">
+      <option value="BeReal">
+    </datalist>
+
+    <form id="anketa" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label for="ime">Ime i prezime</label>
+        <input type="text" id="ime" placeholder="Npr. Ana Horvat" required>
+      </div>
+      <div class="form-2col">
+        <div class="form-group">
+          <label for="razred">Razred</label>
+          <select id="razred" required>
+            <option value="" disabled selected>— odaberi —</option>
+            <option>1. razred</option><option>2. razred</option>
+            <option>3. razred</option><option>4. razred</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="sati">Sati na društvenim mrežama dnevno</label>
+          <input type="number" id="sati" min="0" max="24" step="0.5" placeholder="Npr. 2.5" required oninput="togglePlatforma(this.value)">
+        </div>
+      </div>
+      <div class="form-group" id="platforma-group">
+        <label for="platforma">Omiljena aplikacija</label>
+        <input type="text" id="platforma" placeholder="Npr. TikTok" list="platforme" autocomplete="off">
+        <span class="nijedna-badge">↳ Automatski: Nijednu (0 sati)</span>
+      </div>
+      <button type="submit">Pošalji odgovor</button>
+    </form>
+
+    <div class="success" id="msg">Odgovor dodan u tablicu!</div>
+
+    <table class="result-table" id="tbl">
+      <thead>
+        <tr><th>#</th><th>Ime i prezime</th><th>Razred</th><th>Sati dnevno</th><th>Aplikacija</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <hr>
+  <h2>Što je HTML forma?</h2>
+  <div class="card">
+    <p>HTML forma (<code>&lt;form&gt;</code>) je element koji korisniku omogućuje unos i slanje podataka. Elementima forme skupljamo razne tipove podataka, a JavaScript ih može obrađivati dinamički bez ponovnog učitavanja stranice.</p>
+    <ul class="styled" style="margin-top:0.75rem;">
+      <li><code>&lt;input type="text"&gt;</code> — tekstualni unos</li>
+      <li><code>&lt;input type="number"&gt;</code> — numerički unos s min/max ograničenjima</li>
+      <li><code>&lt;select&gt;</code> — padajući izbornik s opcijama</li>
+      <li><code>&lt;datalist&gt;</code> — predložene opcije uz slobodan unos</li>
+      <li><code>&lt;label&gt;</code> — oznaka koja opisuje element</li>
+      <li><code>&lt;button type="submit"&gt;</code> — gumb koji pokreće obradu forme</li>
+    </ul>
+  </div>
+
+  <h2>HTML kod forme</h2>
+<pre>&lt;form id="anketa" onsubmit="handleSubmit(event)"&gt;
+
+  &lt;label for="ime"&gt;Ime i prezime&lt;/label&gt;
+  &lt;input type="text" id="ime" required&gt;
+
+  &lt;label for="razred"&gt;Razred&lt;/label&gt;
+  &lt;select id="razred" required&gt;
+    &lt;option value="" disabled selected&gt;— odaberi —&lt;/option&gt;
+    &lt;option&gt;3. razred&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label for="sati"&gt;Sati na društvenim mrežama dnevno&lt;/label&gt;
+  &lt;input type="number" id="sati" min="0" max="24" required&gt;
+
+  &lt;label for="platforma"&gt;Omiljena aplikacija&lt;/label&gt;
+  &lt;input type="text" id="platforma" list="platforme" required&gt;
+  &lt;datalist id="platforme"&gt;
+    &lt;option value="TikTok"&gt;
+    &lt;option value="Instagram"&gt;
+  &lt;/datalist&gt;
+
+  &lt;button type="submit"&gt;Pošalji odgovor&lt;/button&gt;
+&lt;/form&gt;</pre>
+
+  <h2>Što je HTML tablica?</h2>
+  <div class="card">
+    <p>HTML tablica (<code>&lt;table&gt;</code>) prikazuje podatke u redovima i stupcima.</p>
+    <ul class="styled" style="margin-top:0.75rem;">
+      <li><code>&lt;thead&gt;</code> — zaglavlje tablice</li>
+      <li><code>&lt;tbody&gt;</code> — tijelo tablice s podacima</li>
+      <li><code>&lt;tr&gt;</code> — jedan redak</li>
+      <li><code>&lt;th&gt;</code> — ćelija zaglavlja</li>
+      <li><code>&lt;td&gt;</code> — ćelija s podatkom</li>
+    </ul>
+  </div>
+
+<pre>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Ime&lt;/th&gt;&lt;th&gt;Razred&lt;/th&gt;&lt;th&gt;Sati&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Ana Horvat&lt;/td&gt;
+      &lt;td&gt;3. razred&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+
+</div>
+<footer>© 2026 Matija Šimić · Tehnička škola Ruđera Boškovića · Zagreb</footer>
+
+<script>
+  let n = 0;
+
+  function togglePlatforma(val) {
+    const group = document.getElementById('platforma-group');
+    const input = document.getElementById('platforma');
+    const isZero = val !== '' && parseFloat(val) === 0;
+    if (isZero) {
+      group.classList.add('disabled-group');
+      input.disabled = true;
+      input.value = '';
+    } else {
+      group.classList.remove('disabled-group');
+      input.disabled = false;
+    }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    n++;
+    const ime = document.getElementById('ime').value;
+    const razred = document.getElementById('razred').value;
+    const satiVal = document.getElementById('sati').value;
+    const sati = satiVal === '' ? '—' : satiVal + ' h';
+    const rawPlatforma = document.getElementById('platforma').value;
+    const platforma = (parseFloat(satiVal) === 0) ? 'Nijednu' : (rawPlatforma || '—');
+    document.getElementById('tbody').insertAdjacentHTML('beforeend',
+      `<tr><td>${n}</td><td>${ime}</td><td>${razred}</td><td>${sati}</td><td>${platforma}</td></tr>`);
+    document.getElementById('tbl').style.display = 'table';
+    document.getElementById('counter').textContent = n + (n === 1 ? ' odgovor' : ' odgovora');
+    const msg = document.getElementById('msg');
+    msg.style.display = 'block';
+    e.target.reset();
+    setTimeout(() => msg.style.display = 'none', 2500);
+  }
+</script>
+<script src="assets/hover.js"></script>
+</body>
+</html>
